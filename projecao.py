@@ -1,8 +1,5 @@
-from tokenize import group
 import pygame, random
 from pygame.locals import *
-
-from flappy import GAME_SPEED, GROUND_WIDTH, PIPE_WIDTH
 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 800
@@ -19,19 +16,19 @@ PIPE_HEIGHT = 500
 PIPE_GAP = 200
 
 class Bird(pygame.sprite.Sprite):
+
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
 
         self.images = [pygame.image.load('bluebird-upflap.png').convert_alpha(),
-                      pygame.image.load('bluebird-midflap.png').convert_alpha(),
-                      pygame.image.load('bluebird-downflap.png').convert_alpha()]
+                       pygame.image.load('bluebird-midflap.png').convert_alpha(),
+                       pygame.image.load('bluebird-downflap.png').convert_alpha()]
         
         self.speed = SPEED
 
         self.current_image = 0
 
         self.image = pygame.image.load('bluebird-upflap.png').convert_alpha()
-        
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect = self.image.get_rect()
@@ -50,14 +47,13 @@ class Bird(pygame.sprite.Sprite):
     def bump(self):
         self.speed = -SPEED
 
-
 class Pipe(pygame.sprite.Sprite):
 
     def __init__(self, inverted, xpos, ysize):
         pygame.sprite.Sprite.__init__(self)
 
         self.image = pygame.image.load('pipe-red.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (PIPE_HEIGHT, PIPE_WIDTH))
+        self.image = pygame.transform.scale(self.image, (PIPE_WIDTH,PIPE_HEIGHT))
 
         self.rect = self.image.get_rect()
         self.rect[0] = xpos
@@ -73,30 +69,32 @@ class Pipe(pygame.sprite.Sprite):
     def update(self):
         self.rect[0] -= GAME_SPEED
 
-
 class Ground(pygame.sprite.Sprite):
+
     def __init__(self, xpos):
         pygame.sprite.Sprite.__init__(self)
+
         self.image = pygame.image.load('base.png').convert_alpha()
-        self.image = pygame.transform.scale(self.image, (GROUND_WIDTH, GROUND_WIDTH))
+        self.image = pygame.transform.scale(self.image, (GROUND_WIDTH, GROUND_HEIGHT))
 
         self.mask = pygame.mask.from_surface(self.image)
 
         self.rect = self.image.get_rect()
         self.rect[0] = xpos
-        self.rect[1] = SCREEN_WIDTH - GROUND_WIDTH
+        self.rect[1] = SCREEN_HEIGHT - GROUND_HEIGHT
 
     def update(self):
         self.rect[0] -= GAME_SPEED
 
 def is_off_screen(sprite):
-    return sprite.rect[0] < -sprite.rect[2]
+    return sprite.rect[0] < -(sprite.rect[2])
 
-def get_random_pipe_height(xpos):
+def get_random_pipes(xpos):
     size = random.randint(100, 300)
     pipe = Pipe(False, xpos, size)
     pipe_inverted = Pipe(True, xpos, SCREEN_HEIGHT - size - PIPE_GAP)
     return pipe, pipe_inverted
+
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
